@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Grind.su | CoD Boosting — Camouflages, Ranks, Levels</title>
+  <!-- Стильные шрифты: Space Grotesk для минимализма и остроты -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Space Grotesk', -apple-system, sans-serif;
+      background-color: #030303;
+      color: #ffffff;
+      line-height: 1.4;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      cursor: default;
+    }
+
+    /* ---------- ОБЩИЕ КОНТЕЙНЕРЫ ---------- */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ---------- HEADER ---------- */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 1.5rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(2, 2, 2, 0.65);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: background 0.3s;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      text-decoration: none;
+      background: linear-gradient(135deg, #ffffff 0%, #b0b0b0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.8rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #b0b0b0;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      transition: color 0.25s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: #ffffff;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 12px #ffffff;
+    }
+
+    .nav-links a:hover {
+      color: #ffffff;
+    }
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* ---------- HERO СЕКЦИЯ ---------- */
+    .hero {
+      position: relative;
+      height: 100vh;
+      min-height: 750px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #010101;
+    }
+
+    /* canvas с частицами теперь без паутины */
+    #particleCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 0 2rem;
+      max-width: 950px;
+      margin: 0 auto;
+      animation: fadeInUp 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+
+    /* жидкий стеклянный блик под текстом */
+    .hero-content::before {
+      content: '';
+      position: absolute;
+      inset: -60px;
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+      border-radius: 40px;
+      transition: opacity 0.2s;
+    }
+
+    .hero h1 {
+      font-size: clamp(3.2rem, 9vw, 6.5rem);
+      font-weight: 700;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin-bottom: 1.8rem;
+      color: #ffffff;
+      text-shadow: 0 0 80px rgba(255,255,255,0.25);
+      word-break: break-word;
+    }
+
+    .hero .subtitle {
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: #cfcfcf;
+      margin-bottom: 2.8rem;
+      max-width: 580px;
+      margin-left: auto;
+      margin-right: auto;
+      letter-spacing: 0.2px;
+      background: rgba(0,0,0,0.3);
+      padding: 0.8rem 1.8rem;
+      border-radius: 60px;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* кнопка liquid glass */
+    .cta-button {
+      display: inline-block;
+      padding: 1.1rem 3.2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #ffffff;
+      background: rgba(20, 20, 20, 0.35);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 60px;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.45s cubic-bezier(0.25, 0.8, 0.25, 1.2);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.7), inset 0 0 18px rgba(255,255,255,0.08);
+    }
+
+    .cta-button::after {
+      content: '';
+      position: absolute;
+      top: -60%;
+      left: -60%;
+      width: 220%;
+      height: 220%;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.4) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s, transform 0.9s;
+      transform: translate(-20%, -20%) rotate(0deg);
+      pointer-events: none;
+    }
+
+    .cta-button:hover {
+      background: rgba(40, 40, 40, 0.45);
+      border-color: rgba(255, 255, 255, 0.65);
+      box-shadow: 0 0 45px rgba(255,255,255,0.35), inset 0 0 22px rgba(255,255,255,0.15);
+      transform: translateY(-4px);
+    }
+
+    .cta-button:hover::after {
+      opacity: 1;
+      transform: translate(20%, 20%) rotate(15deg);
+    }
+
+    /* ---------- СЕКЦИЯ СЕРВИСОВ ---------- */
+    .services-section {
+      padding: 7rem 2rem;
+      background: #050505;
+      position: relative;
+      z-index: 5;
+    }
+
+    .section-title {
+      font-size: 3rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 4rem;
+      letter-spacing: -1px;
+      color: #ffffff;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 70px;
+      height: 3px;
+      background: rgba(255,255,255,0.5);
+      margin: 1rem auto 0;
+      border-radius: 2px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2.2rem;
+      max-width: 1250px;
+      margin: 0 auto;
+    }
+
+    /* карточка — как глянцевое стекло с облаком точек */
+    .game-card {
+      position: relative;
+      background: rgba(15, 15, 15, 0.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 28px;
+      padding: 2.8rem 2rem;
+      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+      overflow: hidden;
+      box-shadow: 0 20px 35px rgba(0,0,0,0.7), inset 0 0 30px rgba(255,255,255,0.03);
+      display: flex;
+      flex-direction: column;
+      transform: translateY(0);
+    }
+
+    /* фон из летающих точек (без паутины) */
+    .game-card .particle-bg {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255, 255, 255, 0.55) 0.4px, transparent 0.4px);
+      background-size: 22px 22px;
+      opacity: 0.25;
+      pointer-events: none;
+      animation: drift 30s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes drift {
+      0% { background-position: 0 0; }
+      100% { background-position: 80px 80px; }
+    }
+
+    .game-card > *:not(.particle-bg) {
+      position: relative;
+      z-index: 2;
+    }
+
+    .game-card:hover {
+      background: rgba(30, 30, 30, 0.55);
+      border-color: rgba(255, 255, 255, 0.35);
+      box-shadow: 0 30px 50px rgba(0,0,0,0.85), inset 0 0 45px rgba(255,255,255,0.1);
+      transform: translateY(-12px);
+    }
+
+    .game-card h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.8px;
+      color: #ffffff;
+      text-shadow: 0 0 10px rgba(255,255,255,0.2);
+    }
+
+    .game-card ul {
+      list-style: none;
+      margin-top: auto;
+    }
+
+    .game-card ul li {
+      font-size: 0.95rem;
+      color: #c0c0c0;
+      margin-bottom: 0.65rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.7rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      padding-bottom: 0.65rem;
+    }
+
+    .game-card ul li:last-child {
+      border-bottom: none;
+    }
+
+    .game-card ul li::before {
+      content: "▹";
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .preorder-badge {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 30px;
+      padding: 0.25rem 1.1rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: #e0e0e0;
+      backdrop-filter: blur(5px);
+    }
+
+    /* ---------- ФУТЕР ---------- */
+    .footer {
+      background: #010101;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding: 2.5rem;
+      text-align: center;
+      color: #888888;
+      font-size: 0.9rem;
+      position: relative;
+      z-index: 5;
+    }
+
+    .footer a {
+      color: #b0b0b0;
+      text-decoration: none;
+      margin: 0 1rem;
+      transition: color 0.2s;
+    }
+
+    .footer a:hover {
+      color: #ffffff;
+    }
+
+    /* ---------- АНИМАЦИИ ---------- */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(45px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .fade-in-up.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .site-header {
+        padding: 1rem 1.8rem;
+      }
+      .nav-links {
+        gap: 1.5rem;
+      }
+      .hero h1 {
+        font-size: 2.8rem;
+      }
+      .section-title {
+        font-size: 2.2rem;
+      }
+      .card-grid {
+        grid-template-columns: 1fr;
+        max-width: 420px;
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a href="#" class="logo">grind.su</a>
+    <ul class="nav-links">
+      <li><a href="#">Services</a></li>
+      <li><a href="#">Games</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </header>
+
+  <section class="hero">
+    <canvas id="particleCanvas" aria-hidden="true"></canvas>
+    <div class="hero-content">
+      <h1>Ascend. Dominate. Without the Grind.</h1>
+      <p class="subtitle">Professional Call of Duty Boosting — Camouflages, Ranked Play, Levels & More.</p>
+      <a href="#" class="cta-button">EXPLORE SERVICES</a>
+    </div>
+  </section>
+
+  <section class="services-section">
+    <h2 class="section-title fade-in-up">Choose Your Game</h2>
+    <div class="card-grid">
+      <!-- BO7 Multiplayer -->
+      <div class="game-card fade-in-up">
+        <div class="particle-bg"></div>
+        <h3>BO7 Multiplayer</h3>
+        <ul>
+          <li>Camouflage grinding</li>
+          <li>Ranked Play boost</li>
+          <li>Prestige levels</li>
+          <li>Weapon XP</li>
+        </ul>
+      </div>
+      <!-- Zombies -->
+      <div class="game-card fade-in-up">
+        <div class="particle-bg"></div>
+        <h3>Zombies</h3>
+        <ul>
+          <li>Easter egg completions</li>
+          <li>Camouflage unlocks</li>
+          <li>High rounds</li>
+          <li>Dark Aether grind</li>
+        </ul>
+      </div>
+      <!-- Warzone -->
+      <div class="game-card fade-in-up">
+        <div class="particle-bg"></div>
+        <h3>Warzone</h3>
+        <ul>
+          <li>Wins boosting</li>
+          <li>Weapon leveling</li>
+          <li>Ranked Play SR</li>
+          <li>Battle Pass</li>
+        </ul>
+      </div>
+      <!-- Pre‑order MW4 -->
+      <div class="game-card fade-in-up">
+        <div class="particle-bg"></div>
+        <span class="preorder-badge">Pre‑order</span>
+        <h3>MW4 Boost</h3>
+        <ul>
+          <li>Early leveling</li>
+          <li>Mastery camos</li>
+          <li>Weapon prestige</li>
+          <li>Season challenges</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© 2026 Grind.su — All rights reserved.</p>
+    <div style="margin-top: 0.8rem;">
+      <a href="#">Discord</a>
+      <a href="#">Terms</a>
+      <a href="#">Privacy</a>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      // ---------- CANVAS: ОБЛАКО ЧАСТИЦ БЕЗ ПАУТИНЫ ----------
+      const canvas = document.getElementById('particleCanvas');
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      let particles = [];
+      const PARTICLE_COUNT = 150;
+      let mouseX = 0, mouseY = 0;
+      let animationFrameId;
+
+      function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+        initParticles();
+      }
+
+      function initParticles() {
+        particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            size: Math.random() * 2.5 + 0.8,
+            speedX: (Math.random() - 0.5) * 0.2,
+            speedY: (Math.random() - 0.5) * 0.2,
+            opacity: Math.random() * 0.7 + 0.3,
+          });
+        }
+      }
+
+      function drawParticles() {
+        if (!canvas || !ctx) return;
+        ctx.clearRect(0, 0, width, height);
+        
+        // влияние мыши для лёгкого движения
+        const influenceRadius = 130;
+        for (let p of particles) {
+          // движение
+          p.x += p.speedX;
+          p.y += p.speedY;
+
+          // мягкое притяжение/отталкивание от мыши (опционально)
+          const dx = mouseX - p.x;
+          const dy = mouseY - p.y;
+          const distToMouse = Math.sqrt(dx*dx + dy*dy);
+          if (distToMouse < influenceRadius && mouseX > 0 && mouseY > 0) {
+            const force = (influenceRadius - distToMouse) / influenceRadius;
+            p.x -= dx * force * 0.02;
+            p.y -= dy * force * 0.02;
+          }
+
+          // границы
+          if (p.x < -10) p.x = width + 10;
+          if (p.x > width + 10) p.x = -10;
+          if (p.y < -10) p.y = height + 10;
+          if (p.y > height + 10) p.y = -10;
+
+          // рисуем точку
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+          ctx.fill();
+          // свечение
+          ctx.shadowColor = 'rgba(255, 255, 255, 0.9)';
+          ctx.shadowBlur = 6;
+          ctx.fill();
+          ctx.shadowColor = 'transparent';
+          ctx.shadowBlur = 0;
+        }
+        
+        animationFrameId = requestAnimationFrame(drawParticles);
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+      
+      // старт
+      resizeCanvas();
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      drawParticles();
+
+      // ---------- ПАРАЛЛАКС (аккуратный) ----------
+      const parallaxElements = document.querySelectorAll('[data-parallax]');
+      function updateParallax() {
+        const scrollY = window.scrollY;
+        parallaxElements.forEach(el => {
+          const speed = parseFloat(el.getAttribute('data-parallax')) || 0.05;
+          const rect = el.getBoundingClientRect();
+          const elementTop = rect.top + scrollY;
+          const offset = (scrollY - elementTop) * speed;
+          // ограничиваем смещение, чтобы не наезжало
+          const maxOffset = 18;
+          const clampedOffset = Math.min(maxOffset, Math.max(-maxOffset, offset));
+          el.style.transform = `translateY(${clampedOffset}px)`;
+        });
+        requestAnimationFrame(updateParallax);
+      }
+      updateParallax();
+
+      // ---------- ПОЯВЛЕНИЕ ПРИ СКРОЛЛЕ ----------
+      const fadeElements = document.querySelectorAll('.fade-in-up');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
+
+      fadeElements.forEach(el => observer.observe(el));
+
+      // ---------- БЛИК НА HERO ПО МЫШИ (Liquid Glass) ----------
+      const heroSection = document.querySelector('.hero');
+      const heroContent = document.querySelector('.hero-content');
+      if (heroSection && heroContent) {
+        heroSection.addEventListener('mousemove', (e) => {
+          const rect = heroSection.getBoundingClientRect();
+          const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
+          const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+          heroContent.style.setProperty('--mouse-x', `${xPercent}%`);
+          heroContent.style.setProperty('--mouse-y', `${yPercent}%`);
+        });
+        // начальное положение
+        heroContent.style.setProperty('--mouse-x', '50%');
+        heroContent.style.setProperty('--mouse-y', '50%');
+      }
+
+    })();
+  </script>
+</body>
+</html>
